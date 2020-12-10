@@ -14,22 +14,109 @@ public class TreeNode {
     }
 }
 
+public struct TreeNodeStack {
+    var array = [TreeNode]()
+    
+    mutating func push(_ element: TreeNode) {
+        array.append(element)
+    }
+    
+    mutating func pop() -> TreeNode? {
+        return array.popLast()
+    }
+}
+
+class BSTIterator {
+    
+    var stack = TreeNodeStack()
+
+    init(_ root: TreeNode?) {
+        pushAll(root)
+    }
+    
+    func pushAll(_ root: TreeNode?) {
+        var toPush = root
+        
+        while toPush != nil {
+            stack.push(toPush!)
+            toPush = toPush?.left
+        }
+    }
+    
+    func next() -> Int {
+        let popped = stack.pop()!
+        
+        if let right = popped.right {
+            
+            if right.left != nil {
+                pushAll(right)
+            } else {
+                stack.push(right)
+            }
+        }
+        return popped.val
+    }
+    
+    func hasNext() -> Bool {
+        !stack.array.isEmpty
+    }
+}
+
+
 class Solution {
-    func inorder(node: TreeNode, new: inout TreeNode?, initial: inout TreeNode?) {
+    
+    var stack = TreeNodeStack()
+    var head: TreeNode? = nil
+    var tail: TreeNode? = nil
+    
+    func updateStack(_ root: TreeNode) {
         
-        if node.left == nil && node.right == nil && new == nil {
-            new = node
-            initial = node
+        print(root.val)
+        
+        if root.left == nil && root.right == nil {
+            stack.push(root)
+            if let popped = stack.pop() {
+                if head == nil {
+                    head = TreeNode(popped.val)
+                    tail = head
+                } else {
+                    let new = TreeNode(popped.val)
+                    tail?.right = new
+                    tail = new
+                }
+            }
         } else {
-            new?.right = node
-        }
-        
-        if let left = node.left {
-            inorder(node: left, new: &new, initial: &initial)
-        }
-        
-        if let right = node.right {
-            inorder(node: right, new: &new, initial: &initial)
+            if let left = root.left {
+                stack.push(root)
+                updateStack(left)
+            } else {
+                if let popped = stack.pop() {
+                    if head == nil {
+                        head = TreeNode(popped.val)
+                        tail = head
+                    } else {
+                        let new = TreeNode(popped.val)
+                        tail?.right = new
+                        tail = new
+                    }
+                }
+            }
+            
+            if let right = root.right {
+                stack.push(right)
+                updateStack(right)
+            } else {
+                if let popped = stack.pop() {
+                    if head == nil {
+                        head = TreeNode(popped.val)
+                        tail = head
+                    } else {
+                        let new = TreeNode(popped.val)
+                        tail?.right = new
+                        tail = new
+                    }
+                }
+            }
         }
     }
     
@@ -37,12 +124,9 @@ class Solution {
         guard let root = root else {
             return nil
         }
-    
-        var newNode: TreeNode? = nil
-        var initial: TreeNode? = nil
         
-        inorder(node: root, new: &newNode, initial: &initial)
+        updateStack(root)
         
-        return initial
+        return head
     }
 }
