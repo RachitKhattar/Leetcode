@@ -126,6 +126,47 @@ class Solution {
         
         return pairs
     }
+    
+    func validMountainArray(_ arr: [Int]) -> Bool {
+        if arr.count == 0 || arr.count == 1 || arr.count == 2 {
+            return false
+        }
+        
+        if arr[1] <= arr[0] {
+            return false
+        }
+        
+        var dir = 0
+        
+        var lastEl = arr[1]
+        
+        for i in 2..<arr.count {
+            
+            if arr[i] == lastEl {
+                return false
+            }
+            
+            switch dir {
+            case 0:
+                if arr[i] > lastEl {
+                    lastEl = arr[i]
+                } else {
+                    lastEl = arr[i]
+                    dir = 1
+                }
+            case 1:
+                if arr[i] > lastEl {
+                    return false
+                } else {
+                    lastEl = arr[i]
+                }
+            default:
+                break
+            }
+        }
+        
+        return dir == 1
+    }
 }
 
 Solution().numPairsDivisibleBy60([30,20,150,100,40])
@@ -133,3 +174,6 @@ Solution().numPairsDivisibleBy60([60,60,60])
 
 Solution().spiralOrder([[1,2,3],[4,5,6],[7,8,9]])
 Solution().generateMatrix(3)
+
+Solution().validMountainArray([0,3,2,1])
+Solution().validMountainArray([3,5,5])
