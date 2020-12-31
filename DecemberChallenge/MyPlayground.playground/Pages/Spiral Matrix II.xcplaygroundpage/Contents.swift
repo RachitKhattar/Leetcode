@@ -1,5 +1,34 @@
 import Foundation
 
+var first = "ra******@ad.com"
+var second = "ra****@ad.com"
+
+let emailRegEx = "[A-Z0-9a-z._%+-]{2}[*]{6}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+emailTest.evaluate(with: first)
+emailTest.evaluate(with: second)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Solution {
     func generateMatrix(_ n: Int) -> [[Int]] {
         if n == 1 {
@@ -167,7 +196,43 @@ class Solution {
         
         return dir == 1
     }
+    
+    func removeDuplicates(_ nums: inout [Int]) -> Int {
+        if nums.count == 0 || nums.count == 1 || nums.count == 2 {
+            return nums.count
+        }
+        
+        var count = 1
+        var lastElement = nums[0]
+        
+        
+        var totalCount = nums.count
+        var i = 1
+        
+        while i < totalCount {
+            if nums[i] == lastElement {
+                if count == 2 {
+                    nums.remove(at: i)
+                    totalCount -= 1
+                } else {
+                    count += 1
+                    i += 1
+                }
+            } else {
+                count = 1
+                lastElement = nums[i]
+                i += 1
+            }
+        }
+        
+        return nums.count
+    }
 }
+
+var a = [1,1,1,2,2,3]
+Solution().removeDuplicates(&a)
+var b = [0,0,1,1,1,1,2,3,3]
+Solution().removeDuplicates(&b)
 
 Solution().numPairsDivisibleBy60([30,20,150,100,40])
 Solution().numPairsDivisibleBy60([60,60,60])
